@@ -1,0 +1,16 @@
+{
+	"development": {
+		"user" : "xu",
+		"pass" : "afv6UFNdCyoMEBk0APQ3JVjFfNYKCDgh",
+		"cert_path" : "/home/xu/.hcd/rpc.cert",
+		"host" : "127.0.0.1",
+		"port" : "19109"
+	},
+	"production": {
+		"user" : "admin",
+		"pass" : "123",
+		"cert_path" : "/home/xu/.hcd/rpc.cert",
+		"host" : "127.0.0.1",
+		"port" : "12009"
+	}
+}

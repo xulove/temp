@@ -1,0 +1,195 @@
+//- index.jade
+extends ./layout.jade
+
+block content
+
+  div.container-fluid(ng-controller='StatsCtrl', role="main")
+    div.row(ng-cloak)
+      div.col-xs-3.stat-holder
+        div.big-info.bestblock.text-info
+          div.pull-left.icon-full-width
+            i.icon-gasprice
+          div.big-details-holder
+            span.small-title Ticket price
+              span.small 
+            span.big-details {{ (bestStats.block.sbits).toString().substr(0,5) }}
+              span.smaller-text &nbsp;HC
+          div.clearfix
+      div.col-xs-3.stat-holder
+        div.big-info.uncleCount(class="{{ bestStats.block.voters | votersClass }}")
+          div.pull-left.icon-full-width
+              i.icon-clock
+          div.big-details-holder
+            span.small-title Price adjusts in 
+              span.small 
+            span.big-details {{144 - bestStats.block.height % 144}} 
+              span.smaller-text blocks
+          div.clearfix
+      div.col-xs-3.stat-holder
+        div.big-info.blocktime.text-info
+          div.pull-left.icon-full-width
+            i.icon-mining
+          div.big-details-holder
+            span.small-title block reward
+            span.big-details {{blockReward.toString().substr(0,5)}}
+              span.smaller-text &nbsp;HC
+          div.clearfix
+      div.col-xs-3.stat-holder
+        div.big-info.avgblocktime.text-info
+          div.pull-left.icon-full-width
+            i.icon-gasprice
+          div.big-details-holder
+            span.small-title Ticket Pool Size
+            span.big-details {{ printablePoolSize }} 
+              span.smaller-text tickets
+          div.clearfix
+
+
+    div.row(ng-cloak)
+      div.col-xs-12.stats-boxes(style="padding-top: 0px;")
+
+        // small columns
+        div.row.second-row
+          div.col-xs-3.stat-holder.box
+            div.gasprice.text-info
+              i.icon-gasprice
+              span.small-title next price
+              span.small-value {{ estimateexpected.toString().substr(0,5) }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.blocktime(class="{{ lastBlock | timeClass : true }}")
+              i.icon-time
+              span.small-title last block
+              span.small-value {{ lastBlock | blockTimeFilter }}
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-info
+              i.icon-mining
+              span.small-title stake reward
+              span.small-value {{ stakeReward.toString().substr(0,5) }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.page-latency.text-info
+              i.icon-uncle
+              span.small-title Ticket Mempool
+              span.small-value {{ allmempooltix }} tickets
+
+        div.row.second-row
+          div.col-xs-3.stat-holder.box
+            div.gasprice.text-success
+              i.icon-gasprice
+              span.small-title min price
+              span.small-value {{ estimatemin.toString().substr(0,5) }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.avgblocktime(class="{{ avgBlockTime | avgTimeClass }}")
+              i.icon-clock
+              span.small-title avg block time
+              span.small-value {{ avgBlockTime | avgTimeFilter }}
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-success
+              i.icon-clock
+              span.small-title adjusts in
+              span.small-value {{6144 - bestStats.block.height % 6144}}&nbsp;blocks
+          div.col-xs-3.stat-holder.box
+            div.difficulty.text-success
+              i.icon-gas
+              span.small-title locked HC
+              span.small-value {{ locked }}&nbsp;HC
+
+        div.row.second-row
+          div.col-xs-3.stat-holder.box
+            div.gasprice.text-warning
+              i.icon-gasprice
+              span.small-title max price
+              span.small-value {{ estimatemax.toString().substr(0,5) }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.gasprice.text-info
+              i.icon-block
+              span.small-title best block
+              span.small-value {{'#'}}{{ bestBlock | number}}
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-warning
+              i.decred-font-logo A
+              span.small-title available supply
+              span.small-value {{ supply }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.gasprice.text-warning
+              i.icon-gasprice
+              span.small-title Avg Ticket Price
+              span.small-value {{ avgTicketPrice.toString().substr(0,5) }}&nbsp;HC
+
+        div.row
+          //div.col-xs-8
+          //div.row
+          div.col-xs-3.stat-holder
+            div.big-info.chart.text-info
+              span.small-title freshstake
+              sparkchart.big-details.spark-difficulty(data="{{freshstakeChart.join(',')}}")
+
+          div.col-xs-3.stat-holder
+            div.big-info.chart.text-info
+              span.small-title voters
+              sparkchart.big-details.spark-voters(data="{{votersChart.join(',')}}")
+
+          div.col-xs-3.stat-holder
+            div.big-info.chart(class="{{ avgBlockTime | avgTimeClass }}")
+              //- i.icon-time
+              span.small-title block time
+              //- span.small-value {{ avgBlockTime | avgTimeFilter }}
+              sparkchart.big-details.spark-blocktimes(data="{{lastBlocksTime.join(',')}}", tooltipsuffix="s")
+
+          div.col-xs-3.stat-holder
+            div.big-info.chart.text-info
+              span.small-title transactions
+              sparkchart.big-details.spark-transactions(data="{{transactionDensity.join(',')}}")
+
+        div.row.second-row
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-success
+              i.icon-difficulty
+              span.small-title PoW difficulty
+              span.small-value {{ lastDifficulty | totalDifficultyFilter }}
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-success
+              i.icon-hashrate
+              span.small-title avg hashrate
+              span.small-value(ng-bind-html="avgHashrate | networkHashrateFilter")
+          div.col-xs-3.stat-holder.box
+            div.active-nodes.text-success
+              i.icon-mining
+              span.small-title PoW reward
+              span.small-value {{ (blockReward * 0.6).toString().substr(0,5) }}&nbsp;HC
+          div.col-xs-3.stat-holder.box
+            div.page-latency(class="{{ {active: true, latency: latency} | latencyClass }}")
+              i.icon-clock
+              span.small-title page latency
+              span.small-value {{latency}} ms
+
+    div.row(ng-cloak, style="padding-top: 10px")
+    div.col-xs-6.map-holder
+      table.table.table-striped
+        thead
+          tr.text-info
+            th.th-nodename
+              i.icon-network(data-toggle="tooltip", data-placement="top", title="Country, City", ng-click="orderTable(['info.name'], false)")
+            th.th-nodetype
+              i.icon-laptop(data-toggle="tooltip", data-placement="top", title="IP", ng-click="orderTable(['info.node'], false)")
+            th.th-latency
+              i.icon-clock(data-toggle="tooltip", data-placement="top", title="Node latency", ng-click="orderTable(['stats.latency'], false)")
+            th
+              i.icon-block(data-toggle="tooltip", data-placement="top", title="Last block")
+            th
+              i.icon-mining(data-toggle="tooltip", data-placement="top", title="Software version")
+        tbody(ng-cloak)
+          tr(ng-repeat='node in peers | orderBy:id track by node.id', class="", id="node_{{node.id}}")
+            td.text-success
+              div.small {{ node.geo.country + (node.geo.city ? ', ' + node.geo.city : '') }}
+            td.text-success
+              span.small {{ node.addr }}
+            td(class="{{ node.lastsend | latencyClass : node.lastrecv }}")
+              span.small {{ (node.lastrecv - node.lastsend >= 0) ? node.lastrecv - node.lastsend : 0 }} sec
+            td(class="{{ node.currentheight | blockHeight : bestBlock }}") # {{ node.currentheight }}
+            td
+              span.small {{ node.subver }}
+
+    div.col-xs-6.map-holder
+      //- div.col-xs-12
+      nodemap#mapHolder(data="map")
+
