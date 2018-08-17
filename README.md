@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 Hcd Network Stats
 ============
 
@@ -46,6 +45,3 @@ pm2 startOrRestart package.json --env=production
 
 see the interface at http://localhost:3000
 =======
-# temp
-临时存放目录
->>>>>>> 11d8ca989bea82dc94b7160c2a401585b20d930f
