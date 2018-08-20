@@ -4,7 +4,7 @@
 netStatsApp.controller('StatsCtrl', function($scope, $filter, $localStorage, socket, _, toastr) {
 
 	var MAX_BINS = 40;
-	var BLOCK_REWARD = 31.19582664;
+	var BLOCK_REWARD = 6.4;
 
 	// Main Stats init
 	// ---------------
